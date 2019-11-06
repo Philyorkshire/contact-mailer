@@ -14,7 +14,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 function generateContactFormFromRequestData(requestData) {
   let form = {
     to: 'contact@averment.digital',
-    from: 'website@averment.digital',
+    from: 'mail@philyorkshire.uk',
     subject: 'Contact Form - Averment Website',
     text: `Email: ${requestData.email}\n
             Telephone: ${requestData.telephone}\n
