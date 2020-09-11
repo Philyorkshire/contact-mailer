@@ -1,0 +1,43 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy to AWS Lambda
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: Install Dependencies
+        run: npm install
+
+      # Runs a single command using the runners shell
+      - name: Deploy AWS Lambda function
+        # You may pin to the exact commit or the version.
+        # uses: yvesgurcan/deploy-lambda-function@1fc74179f8ac3a43e7e6b0f7c643b6f5f0bca43f
+        uses: yvesgurcan/deploy-lambda-function@v0.0.5
+        with:
+          function-name: 'averment-email-handler'
+          # AWS secret key
+          AWS_SECRET_KEY: ${{ AWS_SECRET_KEY }}
+          # AWS secret key ID
+          AWS_SECRET_ID: ${{ AWS_SECRET_ID }}
+          # AWS region of the Lambda
+          AWS_REGION: 'eu-west-1'
