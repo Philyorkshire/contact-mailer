@@ -36,8 +36,8 @@ jobs:
         with:
           function-name: 'averment-email-handler'
           # AWS secret key
-          AWS_SECRET_KEY: ${{ AWS_SECRET_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           # AWS secret key ID
-          AWS_SECRET_ID: ${{ AWS_SECRET_ID }}
+          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
           # AWS region of the Lambda
           AWS_REGION: 'eu-west-1'
