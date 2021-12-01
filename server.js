@@ -26,7 +26,7 @@ function generateContactFormFromRequestData(requestData) {
 }
 
 app.get('/', (request, response) => {
-  response.send('Philyorkshire Limited');
+  response.send('Averment Digital Limited');
 });
 
 app.post('/contact', cors(), (request, response) => {
