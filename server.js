@@ -92,9 +92,9 @@ app.post('/subscribers', cors(), (request, response) => {
         result: request.data
       });
     } catch(err) {
-      return response.status(500).json({
+      return response.status(400).json({
         success: false,
-        error: err
+        error: 'Sorry, something went wrong.'
       });
     }
   })
