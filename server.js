@@ -1,9 +1,9 @@
 require('dotenv').config();
 
 const sgMail = require('@sendgrid/mail');
-const axios = require('axios');
+var axios = require('axios');
 var express = require('express');
-var cors = require('cors')
+var cors = require('cors');
 var app = express();
 var port = process.env.PORT || 8080;
 var listId = process.env.CAMPAIGN_MANAGER_LIST_ID;
@@ -29,9 +29,11 @@ function generateContactFormFromRequestData(requestData) {
 
 function generateSubscriberFormFromRequestData(requestData) {
   let form = {
-    ConsentToTrack: 'Yes',
-    Email: requestData.EmailAddress,
-    Name: requestData.Name
+    'ConsentToTrack': 'Yes',
+    'EmailAddress': requestData.EmailAddress,
+    'Name': requestData.Name,
+    'Resubscribe': true,
+    'RestartSubscriptionBasedAutoresponders': true,
   };
 
   return form;
@@ -64,7 +66,6 @@ app.post('/contact', cors(), (request, response) => {
 });
 
 app.post('/subscribers', cors(), (request, response) => {
-
   let jsonBody = '';
 
   request.on('data', (data) => {
@@ -72,22 +73,29 @@ app.post('/subscribers', cors(), (request, response) => {
   });
 
   request.on('end', async () => {
-    var form = generateSubscriberFormFromRequestData(JSON.parse(jsonBody));
-
+    const emailSubscriber = generateSubscriberFormFromRequestData(JSON.parse(jsonBody));
+    const requestConfig = {
+      auth: {
+        'username': `${apiKey}`,
+        'password': ''
+      },
+      headers: {
+      'Content-Type': 'application/json',
+      }
+    }  
+    
     try {
-      const request = await axios.post(`https://api.createsend.com/api/v3.2/subscribers/${listId}.json`, form, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        auth: {
-          'username': `${apiKey}`,
-          'password': ''
-        }
-      });
+      const request = await axios.post(`https://api.createsend.com/api/v3.2/subscribers/${listId}.json`, emailSubscriber, requestConfig);
 
-      response.status(200).json(request);
-    } catch (err) {
-      response.status(500).json({ message: err });
+      return response.status(200).json({
+        success: true,
+        result: request.data
+      });
+    } catch(err) {
+      return response.status(500).json({
+        success: false,
+        error: err
+      });
     }
   })
 });
